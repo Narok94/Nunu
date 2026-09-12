@@ -1,0 +1,6 @@
+{
+  "name": "Mundo da Nunu",
+  "description": "Aplicativo educativo infantil delicado, seguro e intuitivo com a mascote Nunu para crianças de 2 a 5 anos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
