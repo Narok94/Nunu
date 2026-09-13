@@ -59,28 +59,34 @@ export const COLORS_CONFIG: Record<string, ColorData> = {
 };
 
 export const ALL_FOODS: FoodItemData[] = [
-  // Vermelho
+  // Vermelho (100% vermelho vivo e imediatamente reconhecível por crianças)
   { id: 'strawberry', namePt: 'Morango', colorId: 'red', emoji: '🍓', badgeBg: 'bg-red-100' },
   { id: 'apple', namePt: 'Maçã', colorId: 'red', emoji: '🍎', badgeBg: 'bg-red-100' },
   { id: 'watermelon', namePt: 'Melancia', colorId: 'red', emoji: '🍉', badgeBg: 'bg-red-100' },
+  { id: 'cherry', namePt: 'Cereja', colorId: 'red', emoji: '🍒', badgeBg: 'bg-red-100' },
+  { id: 'tomato', namePt: 'Tomate', colorId: 'red', emoji: '🍅', badgeBg: 'bg-red-100' },
 
-  // Amarelo
+  // Amarelo (100% amarelo puro - removido abacaxi que é marrom/verde)
   { id: 'banana', namePt: 'Banana', colorId: 'yellow', emoji: '🍌', badgeBg: 'bg-amber-100' },
   { id: 'cheese', namePt: 'Queijo', colorId: 'yellow', emoji: '🧀', badgeBg: 'bg-amber-100' },
   { id: 'corn', namePt: 'Milho', colorId: 'yellow', emoji: '🌽', badgeBg: 'bg-amber-100' },
+  { id: 'lemon', namePt: 'Limãozinho', colorId: 'yellow', emoji: '🍋', badgeBg: 'bg-amber-100' },
+  { id: 'butter', namePt: 'Manteiguinha', colorId: 'yellow', emoji: '🧈', badgeBg: 'bg-amber-100' },
 
-  // Verde
+  // Verde (100% verde brilhante e natural)
   { id: 'broccoli', namePt: 'Brócolis', colorId: 'green', emoji: '🥦', badgeBg: 'bg-emerald-100' },
+  { id: 'greenapple', namePt: 'Maçã Verde', colorId: 'green', emoji: '🍏', badgeBg: 'bg-emerald-100' },
   { id: 'pear', namePt: 'Pera', colorId: 'green', emoji: '🍐', badgeBg: 'bg-emerald-100' },
+  { id: 'cucumber', namePt: 'Pepino', colorId: 'green', emoji: '🥒', badgeBg: 'bg-emerald-100' },
+  { id: 'peapod', namePt: 'Ervilha', colorId: 'green', emoji: '🫛', badgeBg: 'bg-emerald-100' },
   { id: 'avocado', namePt: 'Abacate', colorId: 'green', emoji: '🥑', badgeBg: 'bg-emerald-100' },
 
-  // Azul
+  // Azul (100% azul profundo e puro - removidos itens brancos, cinzas e uva roxa)
   { id: 'blueberry', namePt: 'Mirtilo', colorId: 'blue', emoji: '🫐', badgeBg: 'bg-blue-100' },
-  { id: 'bluegrapes', namePt: 'Uvinha', colorId: 'blue', emoji: '🍇', badgeBg: 'bg-blue-100' },
 
-  // Roxo
+  // Roxo (100% roxo autêntico - uva realocada corretamente)
+  { id: 'grapes', namePt: 'Uva', colorId: 'purple', emoji: '🍇', badgeBg: 'bg-purple-100' },
   { id: 'eggplant', namePt: 'Berinjela', colorId: 'purple', emoji: '🍆', badgeBg: 'bg-purple-100' },
-  { id: 'plum', namePt: 'Ameixa', colorId: 'purple', emoji: '🟣', badgeBg: 'bg-purple-100' },
 ];
 
 export const ENCOURAGING_PHRASES = [

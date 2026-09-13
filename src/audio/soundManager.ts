@@ -157,6 +157,46 @@ class SoundManager {
     } catch {}
   }
 
+  // Tactile wooden snap sound for shape fitting
+  public playSnap() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      // Gentle wooden knock (low damp sine/triangle) + bright chime pop
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(220, now);
+      osc1.frequency.exponentialRampToValueAtTime(90, now + 0.08);
+
+      gain1.gain.setValueAtTime(0.3, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.09);
+
+      // Sweet sparkle accent
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(880, now + 0.02);
+      osc2.frequency.exponentialRampToValueAtTime(1320, now + 0.14);
+
+      gain2.gain.setValueAtTime(0.18, now + 0.02);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.02);
+      osc2.stop(now + 0.16);
+    } catch {}
+  }
+
   // Gentle, friendly boing for wrong attempt (no harsh buzzers!)
   public playSoftBoing() {
     if (!this.soundEffectsEnabled) return;
@@ -217,6 +257,100 @@ class SoundManager {
         osc.start(now + time);
         osc.stop(now + time + dur + 0.05);
       });
+    } catch {}
+  }
+
+  // Cheerful cartoon car horn ("bi-bi!")
+  public playCarHorn() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      [0, 0.12].forEach((delay) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now + delay);
+        gain.gain.setValueAtTime(0.18, now + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.09);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + delay);
+        osc.stop(now + delay + 0.1);
+      });
+    } catch {}
+  }
+
+  // Soft paint splash / water drop
+  public playPaint() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(900, now + 0.06);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } catch {}
+  }
+
+  // Quick card flip swish
+  public playCardFlip() {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(480, now + 0.05);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.07);
+    } catch {}
+  }
+
+  // Ascending musical chime for counting step (1..5)
+  public playCountChime(step: number) {
+    if (!this.soundEffectsEnabled) return;
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const scale = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+      const freq = scale[Math.min(Math.max(0, step - 1), scale.length - 1)];
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.24);
     } catch {}
   }
 

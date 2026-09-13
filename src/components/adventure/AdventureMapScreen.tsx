@@ -55,68 +55,55 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
   };
 
   const handleNodeClick = (node: AdventureNode) => {
-    const isUnlocked = node.order <= progress.unlockedNodeIndex;
-
-    if (!isUnlocked) {
-      soundManager.playSoftBoing();
-      return;
-    }
-
-    if (node.isPlayable) {
-      soundManager.playPop(580);
-      onSelectNode(node);
-    } else {
-      // Placeholder activity for future expansion
-      soundManager.playPop(520);
-      setUpcomingNodeModal(node);
-    }
+    soundManager.playPop(580);
+    onSelectNode(node);
   };
 
-  // Node horizontal offset percentages to create the winding S-curve
-  const nodeAlignments = [
-    'justify-center',      // Node 0: Center
-    'justify-end pr-6 sm:pr-14', // Node 1: Right
-    'justify-start pl-6 sm:pl-14', // Node 2: Left
-    'justify-end pr-8 sm:pr-16',   // Node 3: Right
-    'justify-start pl-8 sm:pl-16', // Node 4: Left
-    'justify-center',      // Node 5: Center
+  // Vertical offsets for gentle undulating wave along horizontal trail
+  const nodeWaveOffsets = [
+    'translate-y-2',   // 0
+    '-translate-y-4',  // 1
+    'translate-y-3',   // 2
+    '-translate-y-3',  // 3
+    'translate-y-4',   // 4
+    '-translate-y-2',  // 5
+    'translate-y-3',   // 6
+    '-translate-y-4',  // 7
+    'translate-y-2',   // 8
+    '-translate-y-1',  // 9
   ];
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col bg-gradient-to-b from-[#F0FDF4] via-[#FEFCE8] to-[#FDF4FF] select-none overflow-x-hidden pb-16">
+    <div className="relative h-[100dvh] w-full flex flex-col justify-between bg-gradient-to-b from-[#F0FDF4] via-[#FEFCE8] to-[#FDF4FF] select-none overflow-hidden">
       {/* Garden Scenery Background Visuals */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {/* Soft Garden Sunlight */}
-        <div className="absolute top-10 left-1/4 w-72 h-72 rounded-full bg-amber-200/30 blur-3xl" />
-        <div className="absolute top-1/2 right-4 w-80 h-80 rounded-full bg-emerald-100/35 blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-pink-100/30 blur-3xl" />
+        <div className="absolute top-6 left-1/4 w-72 h-72 rounded-full bg-amber-200/30 blur-3xl" />
+        <div className="absolute top-1/2 right-12 w-80 h-80 rounded-full bg-emerald-100/35 blur-3xl" />
+        <div className="absolute bottom-6 left-10 w-80 h-80 rounded-full bg-pink-100/30 blur-3xl" />
 
         {/* Ambient garden butterflies & decorative nature elements */}
         <motion.div
-          animate={{ y: [0, -15, 0], x: [0, 15, 0], rotate: [0, 8, 0] }}
+          animate={{ y: [0, -12, 0], x: [0, 15, 0], rotate: [0, 8, 0] }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-36 left-4 text-3xl opacity-75"
+          className="absolute top-16 left-24 text-3xl opacity-75"
         >
           🦋
         </motion.div>
         <motion.div
-          animate={{ y: [0, -20, 0], x: [0, -12, 0], rotate: [0, -6, 0] }}
+          animate={{ y: [0, -15, 0], x: [0, -12, 0], rotate: [0, -6, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          className="absolute top-96 right-4 text-2xl opacity-75"
+          className="absolute top-20 right-32 text-2xl opacity-75"
         >
           🌸
         </motion.div>
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-48 left-6 text-2xl opacity-70"
-        >
-          🐞
-        </motion.div>
+
+        {/* Rolling garden grass hill spanning bottom */}
+        <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-emerald-200/50 via-emerald-100/30 to-transparent pointer-events-none rounded-t-[50%] scale-110" />
       </div>
 
-      {/* Top Navigation Bar: Clean, Toddler-Safe, Informative */}
-      <header className="sticky top-0 z-30 w-full max-w-lg mx-auto px-4 py-3 bg-[#F0FDF4]/90 backdrop-blur-md flex items-center justify-between border-b border-emerald-100/60 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+      {/* Top Navigation Bar: Safe from notch and dynamic island */}
+      <header className="relative z-30 w-full safe-px safe-pt pb-1.5 flex items-center justify-between border-b border-emerald-100/40 bg-[#F0FDF4]/80 backdrop-blur-xs">
         {/* Left: Back to Welcome / Home */}
         <button
           id="map-back-button"
@@ -125,14 +112,14 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
             onBackToWelcome();
           }}
           aria-label="Voltar para tela inicial"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 hover:bg-white text-stone-700 font-medium text-xs sm:text-sm border border-stone-200/70 shadow-xs active:scale-95 transition-all cursor-pointer min-h-[40px]"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-stone-700 font-medium text-xs sm:text-sm border border-stone-200/70 shadow-xs active:scale-95 transition-all cursor-pointer min-h-[40px] touch-none"
         >
           <ArrowLeft className="w-4 h-4 stroke-[2.5] text-stone-600" />
           <span>Início</span>
         </button>
 
         {/* Center: Current World Title */}
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/90 rounded-full border border-emerald-200/60 shadow-xs">
+        <div className="flex items-center gap-1.5 px-3.5 py-1 bg-white/90 rounded-full border border-emerald-200/70 shadow-xs">
           <span className="text-base">{JARDIM_DA_NUNU.emoji}</span>
           <span className="text-xs sm:text-sm font-bold text-stone-800">
             {JARDIM_DA_NUNU.name}
@@ -142,7 +129,7 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
         {/* Right: Stars Total & Sound */}
         <div className="flex items-center gap-2">
           {/* Star Counter */}
-          <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300/80 text-amber-950 font-bold text-xs sm:text-sm shadow-xs">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/90 border border-amber-300/80 text-amber-950 font-bold text-xs sm:text-sm shadow-xs">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 stroke-[2]" />
             <span>{progress.starsCount}</span>
           </div>
@@ -152,54 +139,45 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
             id="map-sfx-toggle"
             onClick={toggleSfx}
             aria-label="Alternar som"
-            className="w-8 h-8 rounded-full bg-white/90 text-stone-600 flex items-center justify-center border border-stone-200/60 shadow-xs active:scale-95"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 text-stone-600 flex items-center justify-center border border-stone-200/60 shadow-xs active:scale-95 touch-none cursor-pointer"
           >
-            {sfxEnabled ? <Volume2 className="w-3.5 h-3.5 stroke-[2]" /> : <VolumeX className="w-3.5 h-3.5 stroke-[2]" />}
+            {sfxEnabled ? <Volume2 className="w-4 h-4 stroke-[2]" /> : <VolumeX className="w-4 h-4 stroke-[2]" />}
           </button>
         </div>
       </header>
 
-      {/* Main Adventure Trail Content */}
-      <main className="relative z-10 w-full max-w-md mx-auto px-4 flex-1 flex flex-col pt-4">
-        {/* World Welcome Banner */}
-        <div className="text-center mb-4">
-          <p className="text-xs sm:text-sm font-medium text-stone-600 bg-white/80 inline-block px-4 py-1 rounded-full border border-emerald-200/60 shadow-xs">
-            Siga a trilha e brinque com a Nunu! 🌻
-          </p>
-        </div>
-
-        {/* Vertical Winding Trail */}
-        <div className="relative flex flex-col gap-10 sm:gap-12 my-2 py-4">
-          {/* Decorative Path Stones Connecting Nodes */}
-          <div className="absolute inset-0 pointer-events-none flex justify-center z-0">
+      {/* Main Adventure Trail Content: Horizontal Scrolling Landscape Garden */}
+      <main className="relative z-10 flex-1 w-full overflow-x-auto overflow-y-hidden flex items-center safe-px py-2 scroll-smooth">
+        <div className="relative flex items-center gap-10 sm:gap-14 px-8 py-4 min-w-max">
+          {/* Decorative Horizontal Cobblestone Winding Path SVG */}
+          <div className="absolute inset-0 pointer-events-none flex items-center z-0">
             <svg
-              className="w-full h-full"
-              viewBox="0 0 380 960"
+              className="w-full h-32"
+              viewBox="0 0 1900 120"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               preserveAspectRatio="none"
             >
-              {/* Soft Garden Cobblestone Trail */}
               <path
-                d="M 190 60 C 260 120, 290 160, 290 220 C 290 280, 100 320, 100 390 C 100 460, 290 500, 290 570 C 290 640, 100 680, 100 750 C 100 820, 190 870, 190 920"
+                d="M 20 60 Q 200 20, 380 60 T 740 60 T 1100 60 T 1460 60 T 1820 60"
                 stroke="#CBD5E1"
-                strokeWidth="18"
+                strokeWidth="20"
                 strokeLinecap="round"
-                strokeDasharray="4 22"
-                opacity="0.45"
+                strokeDasharray="6 26"
+                opacity="0.5"
               />
               <path
-                d="M 190 60 C 260 120, 290 160, 290 220 C 290 280, 100 320, 100 390 C 100 460, 290 500, 290 570 C 290 640, 100 680, 100 750 C 100 820, 190 870, 190 920"
+                d="M 20 60 Q 200 20, 380 60 T 740 60 T 1100 60 T 1460 60 T 1820 60"
                 stroke="#34D399"
                 strokeWidth="8"
                 strokeLinecap="round"
-                strokeDasharray="14 18"
-                opacity="0.75"
+                strokeDasharray="16 20"
+                opacity="0.85"
               />
             </svg>
           </div>
 
-          {/* Render Each Node along the Trail */}
+          {/* Render Each of the 10 Nodes along the Horizontal Path */}
           {JARDIM_DA_NUNU.nodes.map((node, index) => {
             const isUnlocked = index <= progress.unlockedNodeIndex;
             const isCurrent = index === progress.currentNodeIndex;
@@ -209,16 +187,16 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
             return (
               <div
                 key={node.id}
-                className={`relative z-10 flex items-center ${nodeAlignments[index % nodeAlignments.length]}`}
+                className={`relative z-10 flex flex-col items-center transition-transform ${nodeWaveOffsets[index % nodeWaveOffsets.length]}`}
               >
                 {/* Nunu Companion standing on or next to the current node */}
                 {hasNunuHere && (
                   <motion.div
+                    layoutId="nunu-trail-avatar"
                     initial={{ scale: 0.8, y: 10 }}
                     animate={{ scale: 1, y: 0 }}
-                    className={`absolute z-30 ${
-                      index % 2 === 1 ? '-left-6 sm:left-2' : '-right-6 sm:right-2'
-                    } -top-12 pointer-events-auto`}
+                    transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+                    className="absolute z-30 -top-11 pointer-events-auto"
                   >
                     <NunuAvatar
                       size="sm"
@@ -241,21 +219,26 @@ export const AdventureMapScreen: React.FC<AdventureMapScreenProps> = ({
               </div>
             );
           })}
-        </div>
 
-        {/* Trail End Decor: Garden Gate / Castle */}
-        <div className="text-center my-6 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-100/90 border border-emerald-200 flex items-center justify-center text-3xl shadow-xs">
-            🏰
+          {/* Trail End Decor: Garden Gate / Castle at the end of the horizontal path */}
+          <div className="relative z-10 flex flex-col items-center justify-center pl-6 pr-10 text-center">
+            <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-emerald-100/90 border-2 border-emerald-300 flex items-center justify-center text-3xl sm:text-4xl shadow-md">
+              🏰
+            </div>
+            <span className="text-xs font-bold text-emerald-800 mt-2 bg-white/90 px-3 py-0.5 rounded-full border border-emerald-200 shadow-2xs whitespace-nowrap">
+              Fim do Jardim
+            </span>
+            <span className="text-[10px] text-stone-500 mt-0.5 whitespace-nowrap">
+              Novos mundos em breve! 🌊
+            </span>
           </div>
-          <span className="text-xs font-semibold text-emerald-800 mt-2 bg-white/80 px-3 py-1 rounded-full border border-emerald-200">
-            Fim do Jardim da Nunu
-          </span>
-          <span className="text-[11px] text-stone-500 mt-1">
-            Novos mundos em breve! 🌊 🦕
-          </span>
         </div>
       </main>
+
+      {/* Subtle bottom indicator */}
+      <footer className="safe-pb pb-1 text-center text-[11px] text-stone-400 font-medium pointer-events-none">
+        Arraste para o lado para ver toda a trilha ✨
+      </footer>
 
       {/* Friendly Modal for Upcoming Activities */}
       <AnimatePresence>

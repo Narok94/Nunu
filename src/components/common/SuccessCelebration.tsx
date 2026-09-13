@@ -1,118 +1,96 @@
-import React, { useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { ChildButton } from './ChildButton';
 import { soundManager } from '../../audio/soundManager';
 
 interface SuccessCelebrationProps {
-  onNextRound: () => void;
-  onGoHome: () => void;
-  starsEarned?: number;
+  onContinue: () => void;
+  starsCount?: number;
+  mascotEmoji?: string;
+  delayContinueMs?: number;
 }
 
 export const SuccessCelebration: React.FC<SuccessCelebrationProps> = ({
-  onNextRound,
-  onGoHome,
-  starsEarned = 5,
+  onContinue,
+  starsCount = 3,
+  mascotEmoji = '🐰',
+  delayContinueMs = 1200,
 }) => {
-  useEffect(() => {
-    // Play celebratory musical fanfare (gentle sound effects only, no voice)
-    soundManager.playFanfare();
+  const [showContinueButton, setShowContinueButton] = useState(false);
 
-    // Trigger canvas confetti
+  useEffect(() => {
+    soundManager.playFanfare();
     try {
       confetti({
-        particleCount: 80,
+        particleCount: 65,
         spread: 70,
-        origin: { y: 0.6 },
+        origin: { y: 0.5 },
         colors: ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#EC4899', '#8B5CF6'],
       });
-
-      const timeout = setTimeout(() => {
-        confetti({
-          particleCount: 50,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-        });
-        confetti({
-          particleCount: 50,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-        });
-      }, 400);
-
-      return () => clearTimeout(timeout);
     } catch {}
-  }, []);
+
+    const timer = setTimeout(() => {
+      setShowContinueButton(true);
+    }, delayContinueMs);
+
+    return () => clearTimeout(timer);
+  }, [delayContinueMs]);
 
   return (
     <motion.div
-      id="success-celebration-overlay"
-      initial={{ opacity: 0, scale: 0.85 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-amber-950/50 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="absolute inset-0 z-50 flex flex-col items-center justify-center p-6 bg-amber-50/85 backdrop-blur-sm select-none"
     >
-      <div className="relative w-full max-w-md bg-white/98 rounded-[32px] p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.12)] border border-amber-100 text-center flex flex-col items-center">
-        {/* Star Icon */}
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, -4, 4, 0],
-          }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-amber-100/80 flex items-center justify-center border border-amber-200/70 mb-3 text-4xl sm:text-5xl"
-        >
-          ⭐
-        </motion.div>
+      <motion.div
+        initial={{ scale: 0.5, y: 20 }}
+        animate={{ scale: [0.9, 1.1, 1], y: [0, -10, 0] }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className="flex flex-col items-center"
+      >
+        {/* Mascot */}
+        <div className="text-7xl sm:text-8xl mb-3 filter drop-shadow-lg animate-bounce select-none">
+          {mascotEmoji}
+        </div>
 
-        {/* Celebratory Message */}
-        <h2 className="text-2xl sm:text-3xl font-bold text-stone-800 mb-1">
-          Muito Bem!
-        </h2>
-        <p className="text-sm sm:text-base font-normal text-stone-500 mb-5">
-          Você alimentou todos os bichinhos! 🎉
-        </p>
-
-        {/* Stars Row */}
-        <div className="flex items-center justify-center gap-2 sm:gap-2.5 mb-6 bg-amber-50/60 px-5 py-2 rounded-full border border-amber-100">
-          {Array.from({ length: starsEarned }).map((_, i) => (
+        {/* Stars */}
+        <div className="flex items-center gap-3 mb-6">
+          {Array.from({ length: starsCount }).map((_, starIdx) => (
             <motion.span
-              key={i}
-              initial={{ scale: 0, rotate: -20 }}
+              key={starIdx}
+              initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.12 * i, type: 'spring', stiffness: 300 }}
-              className="text-2xl sm:text-3xl filter drop-shadow-xs"
+              transition={{ delay: 0.2 + starIdx * 0.15, type: 'spring', stiffness: 400 }}
+              className="text-5xl sm:text-6xl filter drop-shadow-md select-none"
             >
               ⭐
             </motion.span>
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full justify-center">
-          <ChildButton
-            id="celebration-play-again-button"
-            variant="success"
-            size="lg"
-            onClick={onNextRound}
-            className="flex-1"
-          >
-            <span>Brincar de Novo! 🎈</span>
-          </ChildButton>
-
-          <ChildButton
-            id="celebration-home-button"
-            variant="ghost"
-            size="lg"
-            onClick={onGoHome}
-            className="sm:w-auto"
-          >
-            <span>Início 🏠</span>
-          </ChildButton>
-        </div>
-      </div>
+        {/* Big, toddler-friendly Continue Button */}
+        <AnimatePresence>
+          {showContinueButton && (
+            <motion.button
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              onClick={() => {
+                soundManager.playPop(620);
+                onContinue();
+              }}
+              aria-label="Voltar para a trilha"
+              className="mt-2 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-green-400 text-white shadow-xl hover:shadow-2xl flex items-center justify-center border-4 border-white cursor-pointer active:scale-95 transition-transform"
+            >
+              <ArrowRight className="w-10 h-10 sm:w-12 sm:h-12 stroke-[3]" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   );
 };

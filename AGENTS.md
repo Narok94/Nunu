@@ -14,3 +14,10 @@
 3. **EFEITOS SONOROS (SEM FALA)**:
    - Permitidos e incentivados apenas efeitos sonoros infantis suaves gerados por Web Audio API ou chimes (ex.: pequenos "pops", som alegre de acerto, som de mordida/yum, estrelinhas, fanfarra musical sem voz).
    - O botão de controle de som altera apenas efeitos sonoros e música de fundo futura, sem jamais reativar narração por voz.
+
+4. **EXPERIÊNCIA INFANTIL PRIORITARIAMENTE EM MODO HORIZONTAL (LANDSCAPE-FIRST)**:
+   - Toda a área infantil (Home, Trilha de Aventuras e os 10 Minijogos) é concebida e validada prioritariamente em **Landscape (Horizontal)**.
+   - **Dispositivos de Referência**: iPhone 11 (896x414 landscape com notch) e iPhone 16 (landscape com Dynamic Island). Se funcionar confortavelmente no iPhone 11, adapta-se com maestria ao iPhone 16.
+   - **Safe Areas Mandatórias**: Respeitar `env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)` e `env(safe-area-inset-right)`. Nenhum botão ou alvo interativo pode ficar atrás do notch, ilha dinâmica ou indicador de início (home bar).
+   - **Layout Verdadeiramente Horizontal**: Composição pensada para a largura da tela (ex.: controles laterais para dois polegares, divisão equilibrada esquerda/direita, alvos grandes com no mínimo 64px a 88px, sem dependência de telas grandes ou rolagem vertical forçada).
+   - **Orientação Portrait Resiliente**: Em portrait, exibir orientação visual amigável (sem texto) sugerindo girar o aparelho para a horizontal, garantindo que a experiência nunca fique quebrada ou cortada.

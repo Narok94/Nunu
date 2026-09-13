@@ -7,6 +7,7 @@ interface CreatureProps {
   isHappy: boolean;
   isHovered: boolean;
   isGentleWiggle: boolean;
+  isCelebrating?: boolean;
   onFeedDirect?: () => void;
   isTargetSelected?: boolean;
 }
@@ -16,6 +17,7 @@ export const Creature: React.FC<CreatureProps> = ({
   isHappy,
   isHovered,
   isGentleWiggle,
+  isCelebrating = false,
   onFeedDirect,
   isTargetSelected = false,
 }) => {
@@ -38,52 +40,59 @@ export const Creature: React.FC<CreatureProps> = ({
   }, []);
 
   // Determine mouth and expression states
-  const isOpenMouth = isHovered || isHappy;
+  const isOpenMouth = isHovered || isHappy || isCelebrating;
+  const isCurious = isGentleWiggle;
 
   return (
     <div className="relative flex flex-col items-center select-none group">
       {/* Grassy Garden Mound / Ground Base where creature sits */}
-      <div className="absolute -bottom-6 w-44 xs:w-52 sm:w-64 h-14 pointer-events-none flex items-center justify-center">
+      <div className="absolute -bottom-4 sm:-bottom-5 w-28 sm:w-34 md:w-40 h-8 sm:h-10 pointer-events-none flex items-center justify-center">
         {/* Soft ground shadow */}
-        <div className="absolute top-2 w-36 xs:w-44 sm:w-52 h-7 bg-emerald-950/15 rounded-full blur-md" />
+        <div className="absolute top-1 w-24 sm:w-30 h-4 sm:h-5 bg-emerald-950/15 rounded-full blur-md" />
 
         {/* Organic grassy knoll patch */}
-        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-emerald-200/90 to-emerald-100/75 rounded-full border-t border-emerald-300/40 shadow-xs" />
+        <div className="absolute inset-x-0 bottom-0 h-6 sm:h-8 bg-gradient-to-t from-emerald-200/90 to-emerald-100/75 rounded-full border-t border-emerald-300/40 shadow-xs" />
 
         {/* Delicate color harmony accent in the garden (organic color cue without text) */}
         <div
-          className="absolute -top-1 w-20 sm:w-24 h-5 rounded-full blur-xs opacity-40 transition-opacity"
+          className="absolute -top-1 w-16 sm:w-22 h-4 sm:h-5 rounded-full blur-xs opacity-40 transition-opacity"
           style={{ backgroundColor: colorData.hex }}
         />
 
         {/* Tiny garden details around the creature: little grass blades and blossoms */}
-        <span className="absolute -left-2 bottom-3 text-xs sm:text-sm select-none opacity-85">🌱</span>
-        <span className="absolute left-6 bottom-4 text-xs select-none opacity-90">🌿</span>
+        <span className="absolute -left-1 sm:-left-2 bottom-2 sm:bottom-3 text-[10px] sm:text-sm select-none opacity-85">🌱</span>
+        <span className="absolute left-4 sm:left-6 bottom-3 sm:bottom-4 text-[10px] sm:text-xs select-none opacity-90">🌿</span>
         {/* Blossom matching creature color theme */}
         <div
-          className="absolute right-4 bottom-3 w-4 h-4 rounded-full border-2 border-white shadow-xs flex items-center justify-center text-[9px]"
+          className="absolute right-3 sm:right-4 bottom-2 sm:bottom-3 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-xs flex items-center justify-center text-[8px] sm:text-[9px]"
           style={{ backgroundColor: colorData.hex }}
         >
           <span className="opacity-90">🌸</span>
         </div>
-        <span className="absolute -right-2 bottom-2 text-xs sm:text-sm select-none opacity-85">🌼</span>
+        <span className="absolute -right-1 sm:-right-2 bottom-1.5 sm:bottom-2 text-[10px] sm:text-sm select-none opacity-85">🌼</span>
       </div>
 
-      {/* Main Interactive Creature Body with Idle Breathing, Blinking & Feeding States */}
+      {/* Main Interactive Creature Body with Idle Breathing, Blinking, Feeding & Celebration States */}
       <motion.div
         id={`creature-target-${colorData.id}`}
         onClick={onFeedDirect}
         animate={
           isHappy
             ? {
-                scale: [1, 1.15, 0.96, 1.12, 1],
-                y: [0, -18, 0, -8, 0],
-                rotate: [0, -4, 4, -2, 0],
+                scale: [1, 1.06, 1],
+                y: [0, -4, 0],
+                rotate: 0,
+              }
+            : isCelebrating
+            ? {
+                scale: [1, 1.06, 1],
+                y: [0, -6, 0],
+                rotate: [0, -2, 2, 0],
               }
             : isGentleWiggle
             ? {
-                scale: [1, 1.04, 1],
-                rotate: [0, -7, 7, -5, 5, 0],
+                scale: [1, 1.02, 1],
+                rotate: [0, -3, 3, -1, 0],
                 y: [0, -2, 0],
               }
             : isHovered
@@ -94,35 +103,47 @@ export const Creature: React.FC<CreatureProps> = ({
               }
             : {
                 // Gentle natural idle breathing
-                scale: [1, 1.018, 1],
-                y: [0, -3.5, 0],
-                rotate: [0, 0.8, 0, -0.8, 0],
+                scale: [1, 1.015, 1],
+                y: [0, -2.5, 0],
+                rotate: [0, 0.6, 0, -0.6, 0],
               }
         }
         transition={
           isHappy
-            ? { duration: 0.8, ease: 'easeOut' }
+            ? { duration: 0.35, ease: 'easeOut' }
+            : isCelebrating
+            ? { duration: 0.8, repeat: Infinity, ease: 'easeInOut' }
             : isGentleWiggle
-            ? { duration: 0.5, ease: 'easeInOut' }
+            ? { duration: 0.35, ease: 'easeInOut' }
             : isHovered
-            ? { duration: 0.25 }
+            ? { duration: 0.2 }
             : { duration: 3.8, repeat: Infinity, ease: 'easeInOut' }
         }
-        className={`relative z-10 w-38 h-38 xs:w-46 xs:h-46 sm:w-54 sm:h-54 md:w-60 md:h-60 rounded-full flex items-center justify-center cursor-pointer transition-all ${
+        className={`relative z-10 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center cursor-pointer transition-transform ${
           isTargetSelected ? 'ring-4 ring-amber-300 ring-offset-4 ring-offset-emerald-100/50' : ''
         }`}
         aria-label={`Bichinho`}
       >
-        {/* Happy Hearts & Sparkles Pop on Correct Feed */}
+        {/* Happy Hearts & Sparkles Pop on Correct Feed (subtle and short) */}
         {isHappy && (
           <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.4 }}
-            animate={{ opacity: 1, y: -42, scale: 1.35 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="absolute -top-6 text-3xl sm:text-4xl pointer-events-none z-30 filter drop-shadow-sm"
+            initial={{ opacity: 0, y: 0, scale: 0.6 }}
+            animate={{ opacity: [0, 1, 1, 0], y: -24, scale: [0.6, 1.1, 1.1, 0.9] }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="absolute -top-4 text-2xl sm:text-3xl pointer-events-none z-30 filter drop-shadow-xs"
           >
             💖 ✨ ⭐
+          </motion.div>
+        )}
+
+        {/* Celebration Stars when all foods are completed */}
+        {isCelebrating && (
+          <motion.div
+            animate={{ y: [-2, -8, -2], opacity: [0.85, 1, 0.85], scale: [1, 1.1, 1] }}
+            transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-6 text-2xl sm:text-3xl pointer-events-none z-30 filter drop-shadow-xs"
+          >
+            ✨ ⭐ ✨
           </motion.div>
         )}
 
@@ -138,16 +159,18 @@ export const Creature: React.FC<CreatureProps> = ({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Animated Ear Twitching in Idle */}
+          {/* Animated Ear Twitching */}
           <motion.g
             animate={
               isHovered
                 ? { rotate: [-4, 4, -4] }
-                : isHappy
+                : isHappy || isCelebrating
                 ? { rotate: [-10, 10, -10] }
+                : isGentleWiggle
+                ? { rotate: [-8, 2, -8] }
                 : { rotate: [0, 2, 0, -2, 0] }
             }
-            transition={{ duration: isHappy ? 0.4 : 3, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: isHappy || isCelebrating ? 0.4 : 3, repeat: Infinity, ease: 'easeInOut' }}
             style={{ originX: '80px', originY: '40px' }}
           >
             {/* Cute Round Creature Left Ear */}
@@ -176,8 +199,8 @@ export const Creature: React.FC<CreatureProps> = ({
           <ellipse cx="44" cy="94" rx="9" ry="5.5" fill="#FDA4AF" opacity="0.85" />
           <ellipse cx="116" cy="94" rx="9" ry="5.5" fill="#FDA4AF" opacity="0.85" />
 
-          {/* Expressive Eyes: Joyful Laughing / Natural Blink / Big Attentive */}
-          {isHappy ? (
+          {/* Expressive Eyes: Joyful / Curious / Blink / Attentive */}
+          {isHappy || isCelebrating ? (
             /* Joyful laughing curved closed eyes */
             <g>
               <path
@@ -194,6 +217,18 @@ export const Creature: React.FC<CreatureProps> = ({
                 strokeLinecap="round"
                 fill="none"
               />
+            </g>
+          ) : isCurious ? (
+            /* Curious inquiring eyes (wondering and friendly) */
+            <g>
+              {/* Left eye curious wide */}
+              <ellipse cx="60" cy="73" rx="8.5" ry="9.5" fill="#1E293B" />
+              <circle cx="58" cy="71" r="3.5" fill="#FFFFFF" />
+              <circle cx="63" cy="75" r="1.5" fill="#FFFFFF" />
+
+              {/* Right eye wondering slightly tilted */}
+              <ellipse cx="100" cy="75" rx="7.5" ry="8" fill="#1E293B" />
+              <circle cx="98" cy="73" r="3" fill="#FFFFFF" />
             </g>
           ) : isBlinking ? (
             /* Natural cute blink */
@@ -227,6 +262,9 @@ export const Creature: React.FC<CreatureProps> = ({
               {/* Cute little tongue inside */}
               <ellipse cx="80" cy="108" rx="10" ry="5.5" fill="#FB7185" />
             </g>
+          ) : isCurious ? (
+            /* Small curious inquisitive mouth */
+            <circle cx="80" cy="98" r="4.5" fill="#1E293B" />
           ) : (
             /* Sweet calm smile */
             <path
